@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+
+{% block title %}Our Services - BFL Laundry{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1 class="text-center mb-5">Our Services</h1>
+    
+    <div class="row">
+        {% for service in services %}
+        <div class="col-md-4 mb-4">
+            <div class="card h-100">
+                {% if service.image_url %}
+                <img src="{{ service.image_url }}" class="card-img-top" alt="{{ service.name }}">
+                {% endif %}
+                <div class="card-body">
+                    <h4 class="card-title">{{ service.name }}</h4>
+                    <p class="card-text">{{ service.description }}</p>
+                    <p class="card-text"><strong>Price: ${{ "%.2f"|format(service.price) }}</strong></p>
+                </div>
+                <div class="card-footer bg-transparent border-top-0">
+                    <a href="{{ url_for('orders.create_order') }}" class="btn btn-primary w-100">Book Now</a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <div class="row mt-5">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body">
+                    <h3>Why Choose Our Services?</h3>
+                    <div class="row mt-4">
+                        <div class="col-md-4">
+                            <div class="text-center">
+                                <i class="fas fa-tshirt fa-3x text-primary mb-3"></i>
+                                <h4>Professional Care</h4>
+                                <p>Expert handling of all fabric types</p>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="text-center">
+                                <i class="fas fa-truck fa-3x text-primary mb-3"></i>
+                                <h4>Free Pickup & Delivery</h4>
+                                <p>Convenient door-to-door service</p>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="text-center">
+                                <i class="fas fa-clock fa-3x text-primary mb-3"></i>
+                                <h4>Quick Turnaround</h4>
+                                <p>Fast and efficient service</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

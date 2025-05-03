@@ -1,0 +1,102 @@
+{% extends "base.html" %}
+
+{% block title %}Track Order - BFL Laundry{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="card">
+        <div class="card-header">
+            <h3>Track Order #{{ order.id }}</h3>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="card">
+                        <div class="card-body">
+                            <h4>Order Status</h4>
+                            <div class="timeline mt-4">
+                                <div class="timeline-item {{ 'active' if order.status in ['pending', 'processing', 'completed'] }}">
+                                    <i class="fas fa-check-circle"></i>
+                                    <span>Order Placed</span>
+                                    <small>{{ order.created_at.strftime('%Y-%m-%d %H:%M') }}</small>
+                                </div>
+                                <div class="timeline-item {{ 'active' if order.status in ['processing', 'completed'] }}">
+                                    <i class="fas fa-truck"></i>
+                                    <span>Pickup in Progress</span>
+                                </div>
+                                <div class="timeline-item {{ 'active' if order.status == 'processing' }}">
+                                    <i class="fas fa-washing-machine"></i>
+                                    <span>Processing</span>
+                                </div>
+                                <div class="timeline-item {{ 'active' if order.status == 'completed' }}">
+                                    <i class="fas fa-check-double"></i>
+                                    <span>Completed</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card mt-4">
+                        <div class="card-body">
+                            <h4>Delivery Details</h4>
+                            <p><strong>Pickup:</strong> {{ order.pickup_location }}</p>
+                            <p><strong>Dropoff:</strong> {{ order.dropoff_location }}</p>
+                            <p><strong>Scheduled Time:</strong> {{ order.pickup_time.strftime('%Y-%m-%d %H:%M') }}</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-8">
+                    <div id="map" style="height: 500px;"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY"></script>
+<script>
+    function initMap() {
+        const pickup = { lat: -1.2921, lng: 36.8219 }; // Replace with actual coordinates
+        const dropoff = { lat: -1.2921, lng: 36.8229 }; // Replace with actual coordinates
+        
+        const map = new google.maps.Map(document.getElementById('map'), {
+            zoom: 13,
+            center: pickup
+        });
+
+        const pickupMarker = new google.maps.Marker({
+            position: pickup,
+            map: map,
+            title: 'Pickup Location',
+            icon: 'http://maps.google.com/mapfiles/ms/icons/green-dot.png'
+        });
+
+        const dropoffMarker = new google.maps.Marker({
+            position: dropoff,
+            map: map,
+            title: 'Dropoff Location',
+            icon: 'http://maps.google.com/mapfiles/ms/icons/red-dot.png'
+        });
+
+        const directionsService = new google.maps.DirectionsService();
+        const directionsRenderer = new google.maps.DirectionsRenderer({
+            map: map,
+            suppressMarkers: true
+        });
+
+        directionsService.route({
+            origin: pickup,
+            destination: dropoff,
+            travelMode: 'DRIVING'
+        }, (response, status) => {
+            if (status === 'OK') {
+                directionsRenderer.setDirections(response);
+            }
+        });
+    }
+    window.onload = initMap;
+</script>
+{% endblock %}

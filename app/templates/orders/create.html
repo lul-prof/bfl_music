@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+
+{% block title %}Create Order - BFL Laundry{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="card-header">
+        <h3>Create New Order</h3>
+    </div>
+    <div class="card-body">
+        <form method="POST">
+            <div class="mb-3">
+                <label for="pickup_location" class="form-label">Pickup Location</label>
+                <input type="text" class="form-control" id="pickup_location" name="pickup_location" required>
+            </div>
+            <div class="mb-3">
+                <label for="dropoff_location" class="form-label">Drop-off Location</label>
+                <input type="text" class="form-control" id="dropoff_location" name="dropoff_location" required>
+            </div>
+            <div class="mb-3">
+                <label for="pickup_time" class="form-label">Pickup Time</label>
+                <input type="datetime-local" class="form-control" id="pickup_time" name="pickup_time" required>
+            </div>
+            
+            <h4 class="mt-4">Select Services</h4>
+            {% for service in services %}
+            <div class="card mb-3">
+                <div class="card-body">
+                    <div class="row align-items-center">
+                        <div class="col">
+                            <h5 class="card-title">{{ service.name }}</h5>
+                            <p class="card-text">{{ service.description }}</p>
+                            <p class="card-text"><strong>Price: ${{ "%.2f"|format(service.price) }}</strong></p>
+                        </div>
+                        <div class="col-auto">
+                            <div class="input-group">
+                                <input type="number" class="form-control" name="quantities[]" value="0" min="0">
+                                <input type="hidden" name="services[]" value="{{ service.id }}">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+            
+            <div class="d-grid gap-2">
+                <button type="submit" class="btn btn-primary">Create Order</button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&libraries=places"></script>
+<script>
+    // Initialize Google Places Autocomplete for location inputs
+    function initAutocomplete() {
+        new google.maps.places.Autocomplete(
+            document.getElementById('pickup_location')
+        );
+        new google.maps.places.Autocomplete(
+            document.getElementById('dropoff_location')
+        );
+    }
+    google.maps.event.addDomListener(window, 'load', initAutocomplete);
+</script>
+{% endblock %}

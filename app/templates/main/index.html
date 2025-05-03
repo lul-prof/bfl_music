@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+
+{% block title %}Home - BFL Laundry{% endblock %}
+
+{% block content %}
+<div class="jumbotron text-center">
+    <h1 class="display-4">Welcome to BFL Laundry Services</h1>
+    <p class="lead">Professional laundry services at your doorstep</p>
+    <hr class="my-4">
+    <p>Experience the convenience of our premium laundry and dry cleaning services.</p>
+    <a class="btn btn-primary btn-lg" href="{{ url_for('main.services') }}" role="button">View Our Services</a>
+</div>
+
+<div class="row mt-5">
+    <h2 class="text-center mb-4">Our Services</h2>
+    {% for service in services %}
+    <div class="col-md-4 mb-4">
+        <div class="card">
+            {% if service.image_url %}
+            <img src="{{ service.image_url }}" class="card-img-top" alt="{{ service.name }}">
+            {% endif %}
+            <div class="card-body">
+                <h5 class="card-title">{{ service.name }}</h5>
+                <p class="card-text">{{ service.description }}</p>
+                <p class="card-text"><strong>Price: ${{ "%.2f"|format(service.price) }}</strong></p>
+                <a href="{{ url_for('orders.create_order') }}" class="btn btn-primary">Book Now</a>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}
